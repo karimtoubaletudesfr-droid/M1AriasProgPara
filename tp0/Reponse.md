@@ -37,8 +37,57 @@ processus après l'initialisation de MPI avec :
 ```cpp
 MPI_Init(&argc, &argv);
 ``` 
+# code pour afficher le message: 
+```cpp
+if (argc <2){
+        cout << "Usage " << argv[0] << " message " << endl;
+    }
+    else{
+    
+    if(pid%2==0){
+      cout << "Bonjour ! Je suis le processus " 
+       << pid << " sur " << nprocs <<" processus.\n le message est : " << argv[1]
+       << endl;
+    }
+    }
+```    
 ### Observation
 
 Les différents processus MPI s'exécutent de manière concurrente.
 Lorsqu'ils écrivent tous sur la sortie standard avec `cout`, l'ordre
 des affichages n'est donc pas garanti.
+## Exercice 2 — Échanges simples entre processus
+
+### Q4
+Modifiez le programme pour que chaque processus envoie son identifiant à son voisin de droite. On supposera que les processus forment un anneau et que le voisin de droite du processus d'identifiant `nprocs - 1` est `0`.
+
+![Anneau MPI](anneau.png)
+
+### Réponse
+### Q5
+Modifiez le programme pour que désormais chaque processus envoie un tableau dont la taille `n` est donnée en ligne de commande. Chaque processus aura au préalable initialisé son tableau, par exemple avec son identifiant.
+
+### Réponse
+
+#### Question complémentaire
+Que se passe-t-il si vous augmentez la taille du tableau ? Pourquoi ?
+
+### Réponse
+### Q6
+Proposez une solution en utilisant la routine d'envoi bloquant `MPI_Ssend`.
+
+### Réponse
+
+#### Question complémentaire
+Comment peut-on éviter l'interblocage ?
+
+### Réponse
+
+#### Question complémentaire
+Pourquoi est-il nécessaire d'avoir un deuxième tableau pour recevoir le message de son voisin de gauche ?
+
+### Réponse
+### Q7
+Proposez une nouvelle solution en utilisant la routine `MPI_Sendrecv_replace` qui permet de gérer à la fois l'émission et la réception dans le tableau initial.
+
+### Réponse
