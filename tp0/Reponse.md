@@ -156,17 +156,15 @@ int main(int argc, char **argv)
 ```
 #### Codes de retour
 
-- <span style="color:green">`0` — Succès : exécution normale du programme.</span>
-- <span style="color:red">`1` — Erreur : argument manquant.</span>
-- <span style="color:red">`2` — Erreur : valeur de `n` invalide.</span>
-- <span style="color:red">`3` — Erreur : échec de l'allocation mémoire.</span>
+- `0` — Succès : exécution normale du programme.
+- `1` — Erreur : argument manquant.
+- `2` — Erreur : valeur de `n` invalide.
+- `3` — Erreur : échec de l'allocation mémoire.
 
 #### Question complémentaire
 Que se passe-t-il si vous augmentez la taille du tableau ? Pourquoi ?
 
 ### Réponse
-#### Que se passe-t-il si vous augmentez la taille du tableau ? Pourquoi ?
-
 Lorsque la taille du tableau devient suffisamment grande, le programme peut se bloquer.<br>
 
 Avec `MPI_Send`, le comportement dépend notamment de la taille du message.<br>
