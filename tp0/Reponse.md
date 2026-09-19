@@ -147,7 +147,7 @@ int main(int argc, char **argv)
         if(i<n-1)cout<<", ";
        }
        cout<<"]\n";
-
+      free(tab);  
     }
  }
   MPI_Finalize();
