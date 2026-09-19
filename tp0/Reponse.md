@@ -39,7 +39,7 @@ MPI_Init(&argc, &argv);
 ``` 
 # code pour afficher le message: 
 ```cpp
-if (argc <2){
+    if (argc <2){
         cout << "Usage " << argv[0] << " message " << endl;
     }
     else{
@@ -64,6 +64,27 @@ Modifiez le programme pour que chaque processus envoie son identifiant à son vo
 ![Anneau MPI](anneau.png)
 
 ### Réponse
+```C++
+  switch (pid)
+  {
+    case 1:
+        MPI_Send(&a,1,MPI_INT,2,tag,MPI_COMM_WORLD);//envoyer à 2
+        MPI_Recv(&a,1,MPI_INT,0,tag,MPI_COMM_WORLD,MPI_STATUS_IGNORE);// recevoir de 0
+      break;
+    case 2:
+        MPI_Send(&a,1,MPI_INT,3,tag,MPI_COMM_WORLD);//envoyer à 3
+        MPI_Recv(&a,1,MPI_INT,1,tag,MPI_COMM_WORLD,MPI_STATUS_IGNORE);// recevoir de 1
+      break;
+    case 3:
+        MPI_Send(&a,1,MPI_INT,0,tag,MPI_COMM_WORLD);//envoyer à 0 
+        MPI_Recv(&a,1,MPI_INT,2,tag,MPI_COMM_WORLD,MPI_STATUS_IGNORE);// recevoir de 2
+      break;
+    default:
+        MPI_Send(&a,1, MPI_INT, 1, tag, MPI_COMM_WORLD);// envoyer à 1 
+        MPI_Recv(&a,1,MPI_INT,3,tag,MPI_COMM_WORLD,MPI_STATUS_IGNORE);// recevoir de 3 
+      break;
+  }
+```
 ### Q5
 Modifiez le programme pour que désormais chaque processus envoie un tableau dont la taille `n` est donnée en ligne de commande. Chaque processus aura au préalable initialisé son tableau, par exemple avec son identifiant.
 
