@@ -1,0 +1,1 @@
+Apres l'execution du programe avec <code> mpirun -np 4 ./hello <code> le sense de l'argument -np 4 représente le nombre de processus MPI à lancer.
