@@ -176,7 +176,34 @@ Dans un anneau où tous les processus exécutent d'abord `MPI_Send` avant `MPI_R
 ### Q6
 Proposez une solution en utilisant la routine d'envoi bloquant `MPI_Ssend`.
 
-### Réponse
+### Réponse — Utilisation de `MPI_Ssend`
+
+Pour éviter l'interblocage avec `MPI_Ssend`, on casse la symétrie entre les processus :
+
+- les processus pairs effectuent d'abord l'envoi puis la réception ;
+- les processus impairs effectuent d'abord la réception puis l'envoi.
+
+```cpp
+if (pid % 2 == 0) {
+    MPI_Ssend(tab, n, MPI_INT,
+              (pid + 1) % nprocs,
+              tag, MPI_COMM_WORLD);
+
+    MPI_Recv(tab_recu, n, MPI_INT,
+             (pid - 1 + nprocs) % nprocs,
+             tag, MPI_COMM_WORLD,
+             MPI_STATUS_IGNORE);
+}
+else {
+    MPI_Recv(tab_recu, n, MPI_INT,
+             (pid - 1 + nprocs) % nprocs,
+             tag, MPI_COMM_WORLD,
+             MPI_STATUS_IGNORE);
+
+    MPI_Ssend(tab, n, MPI_INT,
+              (pid + 1) % nprocs,
+              tag, MPI_COMM_WORLD);
+}
 
 #### Question complémentaire
 Comment peut-on éviter l'interblocage ?
