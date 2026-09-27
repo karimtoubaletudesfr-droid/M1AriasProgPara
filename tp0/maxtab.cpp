@@ -104,9 +104,10 @@ int main(int argc,char** argv){
     int taille_locale = n / nprocs;
     int max_local = *std::max_element(tab, tab + taille_locale);
     if(pid==root){
-        maxtab[0] = max_local;
-        for(int i=1; i<nprocs; i++){
-            MPI_Recv(&maxtab[i],1,MPI_INT,i,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+        maxtab[root] = max_local;
+        for(int i=0; i<nprocs; i++){
+            if(i != root){
+            MPI_Recv(&maxtab[i],1,MPI_INT,i,0,MPI_COMM_WORLD,MPI_STATUS_IGNORE);}
         }
         int max_global = *std::max_element(maxtab, maxtab + nprocs);
         std::cout << "Le maximum global est : " << max_global << std::endl;
