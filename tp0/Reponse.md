@@ -204,7 +204,7 @@ else {
               (pid + 1) % nprocs,
               tag, MPI_COMM_WORLD);
 }
-
+```
 
 #### Question complémentaire
 Pourquoi est-il nécessaire d'avoir un deuxième tableau pour recevoir le message de son voisin de gauche ?
