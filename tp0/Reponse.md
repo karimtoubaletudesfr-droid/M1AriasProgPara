@@ -245,3 +245,68 @@ MPI_Sendrecv_replace(
     MPI_STATUS_IGNORE
 );
 ```
+## Q8 — Recherche parallèle du maximum d'un tableau
+
+Le tableau est initialement créé et rempli sur le processus `root`.
+
+La taille du tableau doit être divisible par le nombre de processus afin que chaque processus reçoive exactement :
+
+```text
+n / nprocs
+```
+
+éléments.
+
+La répartition est effectuée en plusieurs étapes selon une logique en arbre.
+
+Le nombre d'étapes est calculé avec :
+
+```cpp
+int nb_etapes = ceil(log((double)nprocs) / log(2.0));
+```
+
+Chaque processus calcule ensuite son maximum local avec :
+
+```cpp
+int max_local = *std::max_element(tab, tab + taille_locale);
+```
+
+Les processus autres que `root` envoient leur maximum local au processus `root`.
+
+Le processus `root` stocke tous les maximums locaux dans un tableau puis calcule le maximum global.
+
+### Mesure des performances
+
+Le temps d'exécution est mesuré avec :
+
+```cpp
+MPI_Barrier(MPI_COMM_WORLD);
+double debut = MPI_Wtime();
+```
+
+et :
+
+```cpp
+MPI_Barrier(MPI_COMM_WORLD);
+double fin = MPI_Wtime();
+```
+
+### Résultats
+
+| Taille | np=1 | np=2 | np=4 | np=6 |
+|---:|---:|---:|---:|---:|
+| 6 000 000 | 0.01242 s | 0.01230 s | 0.01692 s | 0.01633 s |
+| 60 000 000 | 0.12786 s | 0.10870 s | 0.13380 s | 0.16584 s |
+| 120 000 000 | 0.24306 s | 0.28203 s | 0.34631 s | 0.48513 s |
+| 300 000 000 | 0.66782 s | 0.79806 s | 1.38752 s | 1.33437 s |
+| 600 000 000 | 1.40874 s | 2.01870 s | 2.95635 s | 3.14993 s |
+
+### Conclusion
+
+La version parallèle n'est pas systématiquement plus rapide.
+
+La recherche du maximum demande très peu de calcul par élément, alors que la version MPI doit en plus répartir les données entre les processus.
+
+Le coût des communications et des copies mémoire peut donc devenir supérieur au gain obtenu par le calcul parallèle.
+
+Sur ces tests, `np=2` apporte un petit gain pour certaines tailles, mais pour les grandes tailles la version séquentielle reste plus rapide.
