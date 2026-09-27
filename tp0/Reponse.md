@@ -223,4 +223,25 @@ On utilise donc :
 ### Q7
 Proposez une nouvelle solution en utilisant la routine `MPI_Sendrecv_replace` qui permet de gérer à la fois l'émission et la réception dans le tableau initial.
 
-### Réponse
+### Réponse — Utilisation de `MPI_Sendrecv_replace`
+
+La routine `MPI_Sendrecv_replace` permet d'envoyer et de recevoir dans le même tableau.
+
+Chaque processus :
+- envoie son tableau à son voisin de droite ;
+- reçoit le tableau de son voisin de gauche ;
+- remplace directement le contenu de son tableau par les données reçues.
+
+```cpp
+MPI_Sendrecv_replace(
+    tab,
+    n,
+    MPI_INT,
+    (pid + 1) % nprocs,
+    tag,
+    (pid - 1 + nprocs) % nprocs,
+    tag,
+    MPI_COMM_WORLD,
+    MPI_STATUS_IGNORE
+);
+```

@@ -10,8 +10,6 @@ int main(int argc, char **argv)
 {
   int pid, nprocs,n;
   int *tab;
-  int *tab_recu;
-
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &pid);
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
@@ -30,34 +28,26 @@ int main(int argc, char **argv)
         return 2 ;
     }
     tab=(int*)malloc(n*sizeof(int));
-    tab_recu=(int*)malloc(n*sizeof(int));
-    if(tab==NULL||tab_recu==NULL){
+    if(tab==NULL){
         cout<<"Erreur : alocation mémoire échoué \n";
         free(tab);
-        free(tab_recu);
         MPI_Finalize();
         return 3;
         
     }
     else{
-        for(int i = 0 ; i<n ; i++)tab[i]=pid;
-        if(pid%2==0){
-            MPI_Ssend(tab,n,MPI_INT,(pid+1)%nprocs,tag,MPI_COMM_WORLD);
-            MPI_Recv(tab_recu,n,MPI_INT,(pid-1+nprocs)%nprocs,tag,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-        }else{
-            MPI_Recv(tab_recu,n,MPI_INT,(pid-1+nprocs)%nprocs,tag,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
-            MPI_Ssend(tab,n,MPI_INT,(pid+1)%nprocs,tag,MPI_COMM_WORLD);
+        for(int i=0; i<n; i++){
+            tab[i]=pid;
         }
-
+        MPI_Sendrecv_replace(tab,n,MPI_INT,(pid+1)%nprocs,tag,(pid-1+nprocs)%nprocs,tag,MPI_COMM_WORLD,MPI_STATUS_IGNORE);
         cout << "Bonjour ! Je suis le processus " 
        << pid << " sur " << nprocs <<" processus.[";
        for(int i=0; i<n; i++){
-        cout<< tab_recu[i];
+        cout<< tab[i];
         if(i<n-1)cout<<", ";
        }
        cout<<"]\n";
        free(tab);
-       free(tab_recu);
     }
  }
   MPI_Finalize();
