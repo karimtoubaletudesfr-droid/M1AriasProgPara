@@ -205,13 +205,19 @@ else {
               tag, MPI_COMM_WORLD);
 }
 
-#### Question complémentaire
-Comment peut-on éviter l'interblocage ?
-
-### Réponse
 
 #### Question complémentaire
 Pourquoi est-il nécessaire d'avoir un deuxième tableau pour recevoir le message de son voisin de gauche ?
+Le deuxième tableau est nécessaire pour conserver les données initiales du processus dans le tableau d'envoi.
+
+Si on recevait directement dans le même tableau, un processus qui effectue la réception avant l'envoi pourrait écraser ses propres données avec celles reçues de son voisin de gauche.
+
+Il enverrait alors les mauvaises données à son voisin de droite.
+
+On utilise donc :
+- `tab` pour les données à envoyer ;
+- `tab_recu` pour les données reçues.
+
 
 ### Réponse
 ### Q7
